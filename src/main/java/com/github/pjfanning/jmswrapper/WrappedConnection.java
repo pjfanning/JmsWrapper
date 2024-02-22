@@ -50,6 +50,14 @@ public class WrappedConnection implements Connection {
         return count;
     }
 
+    public int getUnclosedConsumerCount() {
+        int count = 0;
+        for (WrappedSession session : sessions) {
+            count += session.getUnclosedConsumerCount();
+        }
+        return count;
+    }
+
     @Override
     public void start() throws JMSException {
         wrappedConnection.start();

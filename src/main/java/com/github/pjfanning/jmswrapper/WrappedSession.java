@@ -11,6 +11,7 @@ public class WrappedSession implements Session {
     private final Session wrappedSession;
     private final AtomicInteger closedCount = new AtomicInteger(0);
     private final List<WrappedMessageProducer> messageProducers = new ArrayList<>();
+    private final List<WrappedMessageConsumer> messageConsumers = new ArrayList<>();
 
     public WrappedSession(Session wrappedSession) {
         this.wrappedSession = wrappedSession;
@@ -28,6 +29,20 @@ public class WrappedSession implements Session {
         int count = 0;
         for (WrappedMessageProducer messageProducer : messageProducers) {
             if (messageProducer.getClosedCount() == 0) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public int getTotalConsumerCount() {
+        return messageConsumers.size();
+    }
+
+    public int getUnclosedConsumerCount() {
+        int count = 0;
+        for (WrappedMessageConsumer messageConsumer : messageConsumers) {
+            if (messageConsumer.getClosedCount() == 0) {
                 count++;
             }
         }
@@ -67,17 +82,17 @@ public class WrappedSession implements Session {
 
     @Override
     public MessageConsumer createConsumer(Destination destination) throws JMSException {
-        return wrappedSession.createConsumer(destination);
+        return wrapMessageConsumer(wrappedSession.createConsumer(destination));
     }
 
     @Override
     public MessageConsumer createConsumer(Destination destination, String messageSelector) throws JMSException {
-        return wrappedSession.createConsumer(destination, messageSelector);
+        return wrapMessageConsumer(wrappedSession.createConsumer(destination, messageSelector));
     }
 
     @Override
     public MessageConsumer createConsumer(Destination destination, String messageSelector, boolean noLocal) throws JMSException {
-        return wrappedSession.createConsumer(destination, messageSelector, noLocal);
+        return wrapMessageConsumer(wrappedSession.createConsumer(destination, messageSelector, noLocal));
     }
 
     @Override
@@ -187,37 +202,43 @@ public class WrappedSession implements Session {
 
     @Override
     public MessageConsumer createSharedConsumer(Topic topic, String sharedSubscriptionName) throws JMSException {
-        return wrappedSession.createSharedConsumer(topic, sharedSubscriptionName);
+        return wrapMessageConsumer(wrappedSession.createSharedConsumer(topic, sharedSubscriptionName));
     }
 
     @Override
     public MessageConsumer createSharedConsumer(Topic topic, String sharedSubscriptionName, String messageSelector) throws JMSException {
-        return wrappedSession.createSharedConsumer(topic, sharedSubscriptionName, messageSelector);
+        return wrapMessageConsumer(wrappedSession.createSharedConsumer(topic, sharedSubscriptionName, messageSelector));
     }
 
     @Override
     public MessageConsumer createDurableConsumer(Topic topic, String name) throws JMSException {
-        return wrappedSession.createDurableConsumer(topic, name);
+        return wrapMessageConsumer(wrappedSession.createDurableConsumer(topic, name));
     }
 
     @Override
     public MessageConsumer createDurableConsumer(Topic topic, String name, String messageSelector, boolean noLocal) throws JMSException {
-        return wrappedSession.createDurableConsumer(topic, name, messageSelector, noLocal);
+        return wrapMessageConsumer(wrappedSession.createDurableConsumer(topic, name, messageSelector, noLocal));
     }
 
     @Override
     public MessageConsumer createSharedDurableConsumer(Topic topic, String name) throws JMSException {
-        return wrappedSession.createSharedDurableConsumer(topic, name);
+        return wrapMessageConsumer(wrappedSession.createSharedDurableConsumer(topic, name));
     }
 
     @Override
     public MessageConsumer createSharedDurableConsumer(Topic topic, String name, String messageSelector) throws JMSException {
-        return wrappedSession.createSharedDurableConsumer(topic, name, messageSelector);
+        return wrapMessageConsumer(wrappedSession.createSharedDurableConsumer(topic, name, messageSelector));
     }
 
     private WrappedMessageProducer wrapMessageProducer(MessageProducer messageProducer) {
         WrappedMessageProducer wrappedMessageProducer = new WrappedMessageProducer(messageProducer);
         messageProducers.add(wrappedMessageProducer);
         return wrappedMessageProducer;
+    }
+
+    private WrappedMessageConsumer wrapMessageConsumer(MessageConsumer messageConsumer) {
+        WrappedMessageConsumer wrappedMessageConsumer = new WrappedMessageConsumer(messageConsumer);
+        messageConsumers.add(wrappedMessageConsumer);
+        return wrappedMessageConsumer;
     }
 }
