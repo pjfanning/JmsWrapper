@@ -107,12 +107,12 @@ public class WrappedSession implements Session {
 
     @Override
     public TopicSubscriber createDurableSubscriber(Topic topic, String name) throws JMSException {
-        return wrappedSession.createDurableSubscriber(topic, name);
+        return wrapTopicSubscriber(wrappedSession.createDurableSubscriber(topic, name));
     }
 
     @Override
     public TopicSubscriber createDurableSubscriber(Topic topic, String name, String messageSelector, boolean noLocal) throws JMSException {
-        return wrappedSession.createDurableSubscriber(topic, name, messageSelector, noLocal);
+        return wrapTopicSubscriber(wrappedSession.createDurableSubscriber(topic, name, messageSelector, noLocal));
     }
 
     @Override
@@ -240,5 +240,11 @@ public class WrappedSession implements Session {
         WrappedMessageConsumer wrappedMessageConsumer = new WrappedMessageConsumer(messageConsumer);
         messageConsumers.add(wrappedMessageConsumer);
         return wrappedMessageConsumer;
+    }
+
+    private WrappedTopicSubscriber wrapTopicSubscriber(TopicSubscriber topicSubscriber) {
+        WrappedTopicSubscriber wrappedTopicSubscriber = new WrappedTopicSubscriber(topicSubscriber);
+        messageConsumers.add(wrappedTopicSubscriber);
+        return wrappedTopicSubscriber;
     }
 }
