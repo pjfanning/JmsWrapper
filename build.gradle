@@ -1,9 +1,14 @@
 plugins {
-    id 'java'
+    id 'java-library'
+    id 'signing'
+    id 'maven-publish'
+    id 'io.github.gradle-nexus.publish-plugin' version "1.3.0"
 }
 
-group = 'org.example'
-version = '1.0-SNAPSHOT'
+group = 'com.github.pjfanning'
+version = '0.1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
@@ -17,4 +22,68 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+tasks.named('jar') {
+    manifest {
+        attributes('Automatic-Module-Name': 'com.github.pjfanning.jmswrapper')
+    }
+}
+
+compileTestJava.dependsOn('copyLicenseToBuildResources')
+jar.dependsOn('copyLicenseToBuildResources')
+javadoc.dependsOn('copyLicenseToBuildResources')
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+nexusPublishing {
+    repositories {
+        sonatype()
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from(components.java)
+            pom {
+                name = 'jmswrapper'
+                description = 'Wrapper around JMS API to allow testing of close and other calls'
+                url = 'https://github.com/pjfanning/JmsWrapper'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'pjfanning'
+                        name = 'PJ Fanning'
+                        url = 'https://github.com/pjfanning'
+                    }
+                }
+                scm {
+                    url = 'https://github.com/pjfanning/JmsWrapper'
+                    connection = 'scm:git://github.com/pjfanning/JmsWrapper.git'
+                    developerConnection = 'scm:git://github.com/pjfanning/JmsWrapper.git'
+                }
+            }
+        }
+    }
+}
+
+signing {
+    def signingKey = findProperty("signingKey")
+    def signingPassword = findProperty("signingPassword")
+    useInMemoryPgpKeys(signingKey, signingPassword)
+    sign publishing.publications.mavenJava
+}
+
+tasks.register('copyLicenseToBuildResources', Copy) {
+    from layout.projectDirectory.file("LICENSE")
+    into layout.buildDirectory.dir("resources/main/META-INF")
 }
