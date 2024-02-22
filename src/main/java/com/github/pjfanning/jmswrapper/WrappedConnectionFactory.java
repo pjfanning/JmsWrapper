@@ -29,10 +29,26 @@ public class WrappedConnectionFactory implements ConnectionFactory {
         return count;
     }
 
+    public int getTotalSessionCount() {
+        int count = 0;
+        for (WrappedConnection connection : connections) {
+            count += connection.getTotalSessionCount();
+        }
+        return count;
+    }
+
     public int getUnclosedSessionCount() {
         int count = 0;
         for (WrappedConnection connection : connections) {
             count += connection.getUnclosedSessionCount();
+        }
+        return count;
+    }
+
+    public int getTotalProducerCount() {
+        int count = 0;
+        for (WrappedConnection connection : connections) {
+            count += connection.getTotalProducerCount();
         }
         return count;
     }
@@ -45,6 +61,20 @@ public class WrappedConnectionFactory implements ConnectionFactory {
         return count;
     }
 
+    /**
+     * @return the total number of MessageConsumers (including TopicSubscribers) created across all connections
+     */
+    public int getTotalConsumerCount() {
+        int count = 0;
+        for (WrappedConnection connection : connections) {
+            count += connection.getTotalConsumerCount();
+        }
+        return count;
+    }
+
+    /**
+     * @return the total number of unclosed MessageConsumers (including TopicSubscribers) across all connections
+     */
     public int getUnclosedConsumerCount() {
         int count = 0;
         for (WrappedConnection connection : connections) {

@@ -42,10 +42,26 @@ public class WrappedConnection implements Connection {
         return count;
     }
 
+    public int getTotalProducerCount() {
+        int count = 0;
+        for (WrappedSession session : sessions) {
+            count += session.getTotalProducerCount();
+        }
+        return count;
+    }
+
     public int getUnclosedProducerCount() {
         int count = 0;
         for (WrappedSession session : sessions) {
             count += session.getUnclosedProducerCount();
+        }
+        return count;
+    }
+
+    public int getTotalConsumerCount() {
+        int count = 0;
+        for (WrappedSession session : sessions) {
+            count += session.getTotalConsumerCount();
         }
         return count;
     }
