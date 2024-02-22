@@ -2,12 +2,15 @@ package com.github.pjfanning.jmswrapper;
 
 import javax.jms.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class WrappedSession implements Session {
 
     private final Session wrappedSession;
     private final AtomicInteger closedCount = new AtomicInteger(0);
+    private final List<WrappedMessageProducer> messageProducers = new ArrayList<>();
 
     public WrappedSession(Session wrappedSession) {
         this.wrappedSession = wrappedSession;
@@ -15,6 +18,20 @@ public class WrappedSession implements Session {
 
     public int getClosedCount() {
         return closedCount.get();
+    }
+
+    public int getTotalProducerCount() {
+        return messageProducers.size();
+    }
+
+    public int getUnclosedProducerCount() {
+        int count = 0;
+        for (WrappedMessageProducer messageProducer : messageProducers) {
+            if (messageProducer.getClosedCount() == 0) {
+                count++;
+            }
+        }
+        return count;
     }
 
     @Override
@@ -45,7 +62,7 @@ public class WrappedSession implements Session {
 
     @Override
     public MessageProducer createProducer(Destination destination) throws JMSException {
-        return wrappedSession.createProducer(destination);
+        return wrapMessageProducer(wrappedSession.createProducer(destination));
     }
 
     @Override
@@ -196,5 +213,11 @@ public class WrappedSession implements Session {
     @Override
     public MessageConsumer createSharedDurableConsumer(Topic topic, String name, String messageSelector) throws JMSException {
         return wrappedSession.createSharedDurableConsumer(topic, name, messageSelector);
+    }
+
+    private WrappedMessageProducer wrapMessageProducer(MessageProducer messageProducer) {
+        WrappedMessageProducer wrappedMessageProducer = new WrappedMessageProducer(messageProducer);
+        messageProducers.add(wrappedMessageProducer);
+        return wrappedMessageProducer;
     }
 }
