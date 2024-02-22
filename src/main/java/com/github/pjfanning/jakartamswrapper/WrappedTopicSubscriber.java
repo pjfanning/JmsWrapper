@@ -1,8 +1,8 @@
-package com.github.pjfanning.jmswrapper;
+package com.github.pjfanning.jakartamswrapper;
 
-import javax.jms.JMSException;
-import javax.jms.Topic;
-import javax.jms.TopicSubscriber;
+import jakarta.jms.JMSException;
+import jakarta.jms.Topic;
+import jakarta.jms.TopicSubscriber;
 
 public class WrappedTopicSubscriber extends WrappedMessageConsumer implements TopicSubscriber {
     private final TopicSubscriber wrappedTopicSubscriber;

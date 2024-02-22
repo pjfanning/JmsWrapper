@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.github.pjfanning'
-version = '0.1.1-SNAPSHOT'
+version = '0.1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
 
@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'javax.jms:javax.jms-api:2.0.1'
+    implementation 'jakarta.jms:jakarta.jms-api:3.0.0'
     testImplementation platform('org.junit:junit-bom:5.9.2')
     testImplementation 'org.junit.jupiter:junit-jupiter'
 }
@@ -26,7 +26,7 @@ test {
 
 tasks.named('jar') {
     manifest {
-        attributes('Automatic-Module-Name': 'com.github.pjfanning.jmswrapper')
+        attributes('Automatic-Module-Name': 'com.github.pjfanning.jakartamswrapper')
     }
 }
 
@@ -50,7 +50,7 @@ publishing {
         mavenJava(MavenPublication) {
             from(components.java)
             pom {
-                name = 'jmswrapper'
+                name = 'jakartamswrapper'
                 description = 'Wrapper around JMS API to allow testing of close and other calls'
                 url = 'https://github.com/pjfanning/JmsWrapper'
                 licenses {

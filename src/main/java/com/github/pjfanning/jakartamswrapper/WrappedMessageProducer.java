@@ -1,10 +1,10 @@
-package com.github.pjfanning.jmswrapper;
+package com.github.pjfanning.jakartamswrapper;
 
-import javax.jms.CompletionListener;
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageProducer;
+import jakarta.jms.CompletionListener;
+import jakarta.jms.Destination;
+import jakarta.jms.JMSException;
+import jakarta.jms.Message;
+import jakarta.jms.MessageProducer;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class WrappedMessageProducer implements MessageProducer {

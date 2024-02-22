@@ -1,6 +1,6 @@
-package com.github.pjfanning.jmswrapper;
+package com.github.pjfanning.jakartamswrapper;
 
-import javax.jms.*;
+import jakarta.jms.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

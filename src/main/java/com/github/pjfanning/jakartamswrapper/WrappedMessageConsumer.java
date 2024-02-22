@@ -1,9 +1,9 @@
-package com.github.pjfanning.jmswrapper;
+package com.github.pjfanning.jakartamswrapper;
 
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageConsumer;
-import javax.jms.MessageListener;
+import jakarta.jms.JMSException;
+import jakarta.jms.Message;
+import jakarta.jms.MessageConsumer;
+import jakarta.jms.MessageListener;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class WrappedMessageConsumer implements MessageConsumer {
