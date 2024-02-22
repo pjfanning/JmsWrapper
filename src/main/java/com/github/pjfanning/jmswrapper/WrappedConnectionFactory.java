@@ -37,6 +37,14 @@ public class WrappedConnectionFactory implements ConnectionFactory {
         return count;
     }
 
+    public int getUnclosedProducerCount() {
+        int count = 0;
+        for (WrappedConnection connection : connections) {
+            count += connection.getUnclosedProducerCount();
+        }
+        return count;
+    }
+
     @Override
     public Connection createConnection() throws JMSException {
         return wrapConnection(wrappedConnectionFactory.createConnection());

@@ -42,6 +42,14 @@ public class WrappedConnection implements Connection {
         return count;
     }
 
+    public int getUnclosedProducerCount() {
+        int count = 0;
+        for (WrappedSession session : sessions) {
+            count += session.getUnclosedProducerCount();
+        }
+        return count;
+    }
+
     @Override
     public void start() throws JMSException {
         wrappedConnection.start();
